@@ -4,7 +4,8 @@ ARITHM_BIN_OPS = ["+", "-", "*", "/"]
 BOOL_BIN_OPS = ["&&", "||", "==", "!="]
 BOOL_UNARY_OPS = ["!"]
 Final_line=["/n"]
-
+DELIM=[".",";",":",","]
+ignore_comment = [r'\(\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*?\*+\)|{[^{]*}']
 class lexema(object):
 	"""docstring for lexema"""
 	def __init__(self, sav):
@@ -44,9 +45,14 @@ class Lexer(object):
 				elif self.lecturaprimersimbolo in BOOL_BIN_OPS:
 					self.save+=self.lecturaprimersimbolo
 					self.condition="booleanbin"	
-				elif self.lecturaprimersimbolo.is_integer():
+				elif self.lecturaprimersimbolo==".":
 					self.save+=self.lecturaprimersimbolo
-					self.condition="Numbers"																					
+					self.condition="ten"
+				elif self.lecturaprimersimbolo in ignore_comment :
+					self.save+=self.lecturaprimersimbolo
+					self.condition="comment"
+
+
 			elif self.condition=="kotoba":
 				if  self.lecturaprimersimbolo.isalpha()or self.lecturaprimersimbolo=="_" or self.lecturaprimersimbolo.isdigit()  :
 					self.save+=self.lecturaprimersimbolo
@@ -75,13 +81,57 @@ class Lexer(object):
 				else:
 					self.condition="finish"
 					break	
-			elif self.condition=="Numbers":
-				if  self.lecturaprimersimbolo.is_integer():
+			elif self.condition=="bango":
+				if  self.lecturaprimersimbolo.isdigit():
 					self.save+=self.lecturaprimersimbolo
-					self.condition="Numbers"
+					self.condition="bango"
+				elif self.lecturaprimersimbolo==".":
+					self.save+=self.lecturaprimersimbolo
+					self.condition="ten"
+				elif self.lecturaprimersimbolo.isalpha():
+					self.condition="error"																														
 				else:
 					self.condition="finish"
-					break								
+					break	
+			elif self.condition=="error":
+				raise Exception('error')
+					
+			elif self.condition=="ten":
+				if  self.lecturaprimersimbolo==".":
+					presave=self.save[:-1]
+					self.save="."
+					self.condition="delim"
+					return lexema(presave)
+				elif self.lecturaprimersimbolo.isdigit(): 	
+					self.save+=self.lecturaprimersimbolo
+					self.condition="float"																											
+				else:
+					self.condition="finish"
+					break		
+			elif self.condition=="delim":		
+				if  self.save=="..":
+					self.condition="finish"
+					break
+				elif self.lecturaprimersimbolo in DELIM :		
+					self.save+=self.lecturaprimersimbolo
+					self.condition="delim"																														
+				else:	
+					self.condition="finish"
+					break	
+			elif self.condition=="float":		
+				if  self.lecturaprimersimbolo.isdigit(): 	
+					self.save+=self.lecturaprimersimbolo
+					self.condition="float"
+				elif self.lecturaprimersimbolo.isalpha() or self.lecturaprimersimbolo==".":
+					self.condition="error"
+					#raise Exception('error')																											
+				else:	
+					self.condition="finish"
+					break	
+			elif self.condition=="comment":
+				if  self.lecturaprimersimbolo in ignore_comment:
+					self.condition="comment"
+					break																																													
 			self.lecturaprimersimbolo=str(self.test.read(1))
 				
 		self.condition='S'

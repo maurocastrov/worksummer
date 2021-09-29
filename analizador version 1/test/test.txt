@@ -1,6 +1,14 @@
 1
-1.3
-(1..3)
-1.2.3
-1.ru
-(* My beautiful function returns an interesting result *)  
+ My beautiful function returns an interesting result
+ננאנאנאנאנאנאנ
+1.8
+
+2
+{sdfsdfsdfds
+dfd}
+2.8
+
+3
+//one line comment
+3.8
+HAPOOAJ

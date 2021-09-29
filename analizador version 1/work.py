@@ -1,15 +1,17 @@
 
 REL_BIN_OPS = ["<", "<=", ">", ">=", "==", "!=",":=","=",":"]
-ARITHM_BIN_OPS = ["+", "-", "*", "/"]
+ARITHM_BIN_OPS = ["+", '-', '*']
 BOOL_BIN_OPS = ["&&", "||", "==", "!="]
-BOOL_UNARY_OPS = ["!"]
-Final_line=["/n"]
+BOOL_UNARY_OPS = ["!"] 
+Final_line=["\n"]
 DELIM=[".",";",":",","]
-ignore_comment = [r'\(\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*?\*+\)|{[^{]*}']
+ignore_comment = ["/","{","("]
 class lexema(object):
 	"""docstring for lexema"""
-	def __init__(self, sav):
+	def __init__(self, sav , cha, lin ):
 		self.save = sav
+		self.char=cha
+		self.line=lin		
 		
 class Lexer(object):
 
@@ -20,15 +22,18 @@ class Lexer(object):
 		self.lecturaprimersimbolo = ""
 		directorio = 'C:/Users/user/Documents/Documentos universidad 4 semestre/Compilador_PL0-master/analizador version 1/test/test.txt'
 		self.test =open(directorio,"r")
-		self.count=1
+		self.line=1 
+		self.char=0
 	def siguientelexico(self):
 			
 		while True:
-			if self.lecturaprimersimbolo in Final_line:
-				self.count+=1
-					
-			elif self.condition=="S":
+
+
+
+			if self.condition=="S":
 				self.save=""
+				self.firstline=self.line
+				self.firstchar=self.char
 				if  self.lecturaprimersimbolo.isalpha() or self.lecturaprimersimbolo=="_":
 					self.save+=self.lecturaprimersimbolo
 					self.condition="kotoba"
@@ -48,11 +53,14 @@ class Lexer(object):
 				elif self.lecturaprimersimbolo==".":
 					self.save+=self.lecturaprimersimbolo
 					self.condition="ten"
-				elif self.lecturaprimersimbolo in ignore_comment :
-					self.save+=self.lecturaprimersimbolo
-					self.condition="comment"
-
-
+				elif self.lecturaprimersimbolo =="{" :
+					self.condition="{"
+				elif self.lecturaprimersimbolo =="/" :
+					self.condition="/"
+				elif self.lecturaprimersimbolo =="(" :
+					self.condition="("
+	
+	
 			elif self.condition=="kotoba":
 				if  self.lecturaprimersimbolo.isalpha()or self.lecturaprimersimbolo=="_" or self.lecturaprimersimbolo.isdigit()  :
 					self.save+=self.lecturaprimersimbolo
@@ -101,7 +109,7 @@ class Lexer(object):
 					presave=self.save[:-1]
 					self.save="."
 					self.condition="delim"
-					return lexema(presave)
+					return lexema(presave,self.firstchar, self.firstline)
 				elif self.lecturaprimersimbolo.isdigit(): 	
 					self.save+=self.lecturaprimersimbolo
 					self.condition="float"																											
@@ -128,21 +136,41 @@ class Lexer(object):
 				else:	
 					self.condition="finish"
 					break	
-			elif self.condition=="comment":
-				if  self.lecturaprimersimbolo in ignore_comment:
-					self.condition="comment"
-					break																																													
+			elif self.condition=="/":	
+				if self.lecturaprimersimbolo=="/"  :				
+					self.condition="//"
+				else:    
+					
+					self.condition="operations"
+					continue	
+			elif self.condition=="//":
+				if self.lecturaprimersimbolo in Final_line: 
+					self.condition='S'
+			elif self.condition=="{":		
+				if  self.lecturaprimersimbolo=="*":
+					self.condition="{*"
+					if 	self.lecturaprimersimbolo==")"
+						self.condition='S'
+					
+				else: 	
+					self.condition=="operations" 																										
+			elif self.condition=="{*"
+						
 			self.lecturaprimersimbolo=str(self.test.read(1))
-				
+			self.char+=1	
+			if self.lecturaprimersimbolo in Final_line:
+				self.line+=1
+				self.char=0	
 		self.condition='S'
 			#return self.save
-		return lexema(self.save)
+		return lexema(self.save,self.firstchar,self.firstline)
+
 
 lexanalizer = Lexer()
 lex = lexanalizer.siguientelexico()
 while lex.save != "":
 	
-	print("lex:" + lex.save)
+	print("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save)
 	lex = lexanalizer.siguientelexico()
 
 		

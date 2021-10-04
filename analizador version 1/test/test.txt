@@ -1,14 +1,14 @@
-1
- My beautiful function returns an interesting result
-ррарарарарарар
-1.8
-
-2
-{sdfsdfsdfds
-dfd}
-2.8
-
-3
-//one line comment
-3.8
-HAPOOAJ
+var (* dsffsdf *) a,n,c,d:word; //dsfsdf
+begin { основная программа }
+    readln( a );
+    n:=1;
+    while ( n <= sqrt(a) ) do begin
+       c:=a mod n;
+       d:=a div n;
+       if c = 0 then begin
+          writeln( n );
+          if n <> d then writeln( d );
+       end;
+       inc( n );
+    end;
+end.

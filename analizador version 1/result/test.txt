@@ -1,72 +1,7 @@
-line:1 char1 lex:var
-wordsline:1 char17 lex:)
-delimline:1 char19 lex:a
-wordsline:1 char20 lex:,
-delimline:1 char21 lex:n
-wordsline:1 char22 lex:,
-delimline:1 char23 lex:c
-wordsline:1 char24 lex:,
-delimline:1 char25 lex:d
-wordsline:1 char26 lex::
-binary operationsline:1 char27 lex:word
-wordsline:1 char31 lex:;
-delimline:2 char1 lex:begin
-wordsline:3 char5 lex:readln
-wordsline:3 char11 lex: 
-delimline:3 char13 lex:a
-wordsline:3 char15 lex:);
-delimline:4 char5 lex:n
-wordsline:4 char6 lex::=
-binary operationsline:4 char8 lex:1
-bangoline:4 char9 lex:;
-delimline:5 char5 lex:while
-wordsline:5 char11 lex: 
-delimline:5 char13 lex:n
-wordsline:5 char15 lex:<=
-binary operationsline:5 char18 lex:sqrt
-wordsline:5 char22 lex:a)
-delimline:5 char26 lex:)
-delimline:5 char28 lex:do
-wordsline:5 char31 lex:begin
-wordsline:6 char8 lex:c
-wordsline:6 char9 lex::=
-binary operationsline:6 char11 lex:a
-wordsline:6 char13 lex:mod
-wordsline:6 char17 lex:n
-wordsline:6 char18 lex:;
-delimline:7 char8 lex:d
-wordsline:7 char9 lex::=
-binary operationsline:7 char11 lex:a
-wordsline:7 char13 lex:div
-wordsline:7 char17 lex:n
-wordsline:7 char18 lex:;
-delimline:8 char8 lex:if
-wordsline:8 char11 lex:c
-wordsline:8 char13 lex:=
-binary operationsline:8 char15 lex:0
-bangoline:8 char17 lex:then
-wordsline:8 char22 lex:begin
-wordsline:9 char11 lex:writeln
-wordsline:9 char18 lex: 
-delimline:9 char20 lex:n
-wordsline:9 char22 lex:);
-delimline:10 char11 lex:if
-wordsline:10 char14 lex:n
-wordsline:10 char16 lex:<>
-relationsline:10 char19 lex:d
-wordsline:10 char21 lex:then
-wordsline:10 char26 lex:writeln
-wordsline:10 char33 lex: 
-delimline:10 char35 lex:d
-wordsline:10 char37 lex:);
-delimline:11 char8 lex:end
-wordsline:11 char11 lex:;
-delimline:12 char8 lex:inc
-wordsline:12 char11 lex: 
-delimline:12 char13 lex:n
-wordsline:12 char15 lex:);
-delimline:13 char5 lex:end
-wordsline:13 char8 lex:;
-delimline:14 char1 lex:end
-wordsline:14 char4 lex:.
-delim
+line:1 char1 lex:1
+bangoline:2 char1 lex:1.75
+floatline:3 char1 lex:1.2E20
+
+floatline:4 char1 lex:1.2E-20
+
+float

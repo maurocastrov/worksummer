@@ -11,6 +11,7 @@ DELIM=[".",";",":",",",")"]
 ignore_comment = ["/","{","("]
 reservadas = ['array','downto','function','of','repeat','until','begin','else','goto','packed','set','var','case','end','if','procedure','then','while','const','file','label','program','to','with','do','for','nil','record','type'
 		]
+
 class lexema(object):
 	"""docstring for lexema"""
 	def __init__(self, sav , cha, lin, typ ):
@@ -75,8 +76,7 @@ class Lexer(object):
 				elif self.lecturaprimersimbolo=="(*" :
 					self.condition="(*"	
 				elif self.lecturaprimersimbolo in reservadas:
-					self.save+="reservacion"	
-	
+					self.save+="reservacion"		
 	
 			elif self.condition=="kotoba":
 				if  self.lecturaprimersimbolo.isalpha()or self.lecturaprimersimbolo=="_" or self.lecturaprimersimbolo.isdigit()  :
@@ -115,13 +115,37 @@ class Lexer(object):
 					self.save+=self.lecturaprimersimbolo
 					self.condition="ten"
 				elif self.lecturaprimersimbolo.isalpha():
-					self.condition="error"																														
+					self.condition="error"	
+
+
+
+
 				else:
 					# self.condition="finish"
 					break	
 			elif self.condition=="error":
 				raise Exception('error')
+			elif self.condition =="especial":
+				self.save+=self.lecturaprimersimbolo
+			 	self.condition="especial"
+				if self.lecturaprimersimbolo.isdigit():
+					self.condition="especial"
+				elif self.lecturaprimersimbolo=="-":
+				 	self.condition="negative"						
+				else:
 					
+					print("{:.0f}".format(float(self.save)))
+					break
+			elif self.condition =="negative":
+				self.save+=self.lecturaprimersimbolo
+			 	self.condition="especial"
+
+				if self.lecturaprimersimbolo.isdigit():
+					self.condition="negative"						
+				else:
+					
+					print("{:.21f}".format(float(self.save)))
+					break								
 			elif self.condition=="ten":
 				if  self.lecturaprimersimbolo==".":
 					presave=self.save[:-1]
@@ -149,12 +173,21 @@ class Lexer(object):
 				if  self.lecturaprimersimbolo.isdigit(): 	
 					self.save+=self.lecturaprimersimbolo
 					self.condition="float"
+				elif  self.lecturaprimersimbolo=="E":
+				 	self.save+=self.lecturaprimersimbolo
+				 	self.condition="especial"
+
 				elif self.lecturaprimersimbolo.isalpha() or self.lecturaprimersimbolo==".":
 					self.condition="error"
 					#raise Exception('error')																											
 				else:	
+					# print("{:.0f}".format(float(self.save)))
 					# self.condition="finish"
 					break	
+
+
+											
+
 			elif self.condition=="/":	
 				if self.lecturaprimersimbolo=="/"  :				
 					self.condition="//"
@@ -209,8 +242,15 @@ class Lexer(object):
 			if self.save.upper() in reservadas:
 				conditn="Reservation words"
 			else:
-				conditn="words"	 
-
+				conditn="words"	
+		elif self.save in ARITHM_BIN_OPS:
+			conditn="arithmetical operations"	
+		elif self.save in BOOL_BIN_OPS:
+			conditn="Boolean operations"
+		elif self.save in BOOL_UNARY_OPS:
+			conditn="Boolean  unary operations"				 
+		elif conditn =="especial":
+			conditn="float"
 
 		self.condition='S'
 			#return self.saveb

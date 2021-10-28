@@ -3,7 +3,7 @@ import os
 #-*-coding: utf-8 -*-
 
 REL_BIN_OPS = ["<", "<=", ">", ">=", "==", "!=",":=","=",":"]
-ARITHM_BIN_OPS = ["+", '-',"*"]
+ARITHM_BIN_OPS = ["+", '-',"*","/"]
 BOOL_BIN_OPS = ["&&", "||", "==", "!="]
 BOOL_UNARY_OPS = ["!"] 
 Final_line=["\n"]
@@ -18,10 +18,6 @@ class lexema(object):
 		self.save = sav
 		self.char=cha
 		self.line=lin	
-		if sav == "":
-			self.end = True
-		else: 
-			self.end = False
 		self.type=typ
 class Lexer(object):
 
@@ -35,6 +31,7 @@ class Lexer(object):
 		self.line=1 
 		self.char=0
 		self.type=self.condition
+		self.conditn = ""
 	def siguientelexico(self):
 			
 		while True:
@@ -70,8 +67,10 @@ class Lexer(object):
 				elif self.lecturaprimersimbolo =="{" :
 					self.condition="{"
 				elif self.lecturaprimersimbolo =="/" :
+					self.save+=self.lecturaprimersimbolo
 					self.condition="/"
 				elif self.lecturaprimersimbolo =="(" :
+					self.save+=self.lecturaprimersimbolo
 					self.condition="("
 				elif self.lecturaprimersimbolo=="(*" :
 					self.condition="(*"	
@@ -124,10 +123,11 @@ class Lexer(object):
 					# self.condition="finish"
 					break	
 			elif self.condition=="error":
-				raise Exception('error')
+				raise Exception('Dear Klenin there is a mistake in char: ' + str(self.firstchar)+ ' ,line: ' + str(self.firstline) )
+
 			elif self.condition =="especial":
 				self.save+=self.lecturaprimersimbolo
-			 	self.condition="especial"
+				self.condition="especial"
 				if self.lecturaprimersimbolo.isdigit():
 					self.condition="especial"
 				elif self.lecturaprimersimbolo=="-":
@@ -138,21 +138,21 @@ class Lexer(object):
 					break
 			elif self.condition =="negative":
 				self.save+=self.lecturaprimersimbolo
-			 	self.condition="especial"
+				self.condition="especial"
 
 				if self.lecturaprimersimbolo.isdigit():
 					self.condition="negative"						
 				else:
-					
+
 					print("{:.21f}".format(float(self.save)))
 					break								
 			elif self.condition=="ten":
 				if  self.lecturaprimersimbolo==".":
 					presave=self.save[:-1]
 					self.save="."
-					condition="Numbers"
+					self.conditn="Numbers"
 					self.condition="delim"
-					return lexema(presave,self.firstchar, self.firstline, condition)
+					return lexema(presave,self.firstchar, self.firstline, self.conditn)
 				elif self.lecturaprimersimbolo.isdigit(): 	
 					self.save+=self.lecturaprimersimbolo
 					self.condition="float"																											
@@ -164,8 +164,9 @@ class Lexer(object):
 					# self.condition="finish"
 					break
 				elif self.lecturaprimersimbolo in DELIM :		
-					self.save+=self.lecturaprimersimbolo
-					self.condition="delim"																														
+					#self.save+=self.lecturaprimersimbolo
+					self.condition="delim"
+					break																														
 				else:	
 					# self.condition="finish"
 					break	
@@ -202,11 +203,11 @@ class Lexer(object):
 				if  self.lecturaprimersimbolo=="*":
 					self.condition="(*"
 				elif self.lecturaprimersimbolo==")":
-					self.save+=self.lecturaprimersimbolo
 					self.condition=='delim'
+					continue
 				else: 	
-					self.save+=self.lecturaprimersimbolo
 					self.condition='delim'
+					continue
 					
 																													
 			elif self.condition=="(*": 
@@ -215,11 +216,12 @@ class Lexer(object):
 			elif self.condition == "(**":
 				if self.lecturaprimersimbolo==")":
 						self.condition = 'S'
-						continue
+						
 			elif self.condition=="{":
 				if self.lecturaprimersimbolo=="}":
 						self.condition= 'S'
-						continue	
+				elif self.lecturaprimersimbolo=="" :
+					self.condition="error"		
 			elif self.condition=="reservacion":
 				if	self.lecturaprimersimbolo in reservadas:
 					self.save+=self.lecturaprimersimbolo					
@@ -251,24 +253,31 @@ class Lexer(object):
 			conditn="Boolean  unary operations"				 
 		elif conditn =="especial":
 			conditn="float"
+		elif conditn =="bango":
+			conditn="Numbers"
 
 		self.condition='S'
 			#return self.saveb
+		self.conditn = conditn
+
 		return lexema(self.save,self.firstchar,self.firstline,conditn)
 		self.test.close()
+
+	def siguientelexicoget(self):
+		return lexema(self.save,self.firstchar,self.firstline,self.conditn)
 
 
 if __name__ == '__main__':
 	lexanalizer = Lexer()
 	file2 = open("result\\test.txt",'w') 
-	lex = lexanalizer.siguientelexico()
-
-	massive=[]
-	while lex.save:
-		massive.append(lex)
-		file2.write("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save+'\n'+lex.type)
-		print("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save +" type: "+lex.type)
+	try:
 		lex = lexanalizer.siguientelexico()
+		while lex.save:
+			file2.write("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save+'\n'+lex.type)
+			print("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save +" type: "+lex.type)
+			lex = lexanalizer.siguientelexico()
+	except Exception as e:
+		print(e)
 
 
 		

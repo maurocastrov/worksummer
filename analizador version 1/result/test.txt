@@ -1,7 +1,8 @@
-line:1 char1 lex:1
-bangoline:2 char1 lex:1.75
-floatline:3 char1 lex:1.2E20
-
-floatline:4 char1 lex:1.2E-20
-
-float
+line:1 char1 lex:(
+delimline:1 char2 lex:a
+wordsline:1 char3 lex:+
+arithmetical operationsline:1 char4 lex:3
+Numbersline:1 char5 lex:)
+delimline:1 char6 lex:*
+arithmetical operationsline:1 char7 lex:1
+Numbers

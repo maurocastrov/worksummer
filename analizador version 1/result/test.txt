@@ -1,8 +1,1 @@
-line:1 char1 lex:(
-delimline:1 char2 lex:a
-wordsline:1 char3 lex:+
-arithmetical operationsline:1 char4 lex:3
-Numbersline:1 char5 lex:)
-delimline:1 char6 lex:*
-arithmetical operationsline:1 char7 lex:1
-Numbers
+line:1 char1 lex:9Numbers klenin: Integerline:1 char2 lex:+arithmetical operations klenin: operatorline:1 char3 lex:3Numbers klenin: Integerline:1 char4 lex:(delim klenin: Delimeterline:1 char5 lex:8Numbers klenin: Integerline:1 char6 lex:*arithmetical operations klenin: operatorline:1 char7 lex:6Numbers klenin: Integerline:1 char8 lex:)delim klenin: Delimeter

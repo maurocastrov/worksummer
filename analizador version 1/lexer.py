@@ -1,9 +1,10 @@
 import sys
 import os
+from error import lexico
 #-*-coding: utf-8 -*-
 
-REL_BIN_OPS = ["<", "<=", ">", ">=", "==", "!=",":=","=",":"]
-ARITHM_BIN_OPS = ["+", '-',"*","/"]
+REL_BIN_OPS = ["<", "<=", ">", ">=", "==", "!=","=",":"]
+ARITHM_BIN_OPS = ["+", '-',"*",":=",]
 BOOL_BIN_OPS = ["&&", "||", "==", "!="]
 BOOL_UNARY_OPS = ["!"] 
 Final_line=["\n"]
@@ -14,11 +15,12 @@ reservadas = ['array','downto','function','of','repeat','until','begin','else','
 
 class lexema(object):
 	"""docstring for lexema"""
-	def __init__(self, sav , cha, lin, typ ):
+	def __init__(self, sav , cha, lin, typ,klen):
 		self.save = sav
 		self.char=cha
 		self.line=lin	
 		self.type=typ
+		self.klen=klen
 class Lexer(object):
 
 	def __init__(self, fin):
@@ -26,13 +28,15 @@ class Lexer(object):
 		self.condition="S"#start
 		self.save=""
 		self.lecturaprimersimbolo = " "
+		# directorio = 'C:/Users/user/Documents/Documentos universidad 4 semestre/Compilador_PL0-master/analizador version 1/test/test.txt'
 		self.test =open(fin,"r")
 		self.line=1 
 		self.char=0
 		self.type=self.condition
 		self.conditn = ""
+		self.klen =""
 	def siguientelexico(self):
-			
+		
 		while True:
 			if self.condition=="S":
 				self.save=""
@@ -72,6 +76,7 @@ class Lexer(object):
 					self.save+=self.lecturaprimersimbolo
 					self.condition="("
 				elif self.lecturaprimersimbolo=="(*" :
+
 					self.condition="(*"	
 				elif self.lecturaprimersimbolo in reservadas:
 					self.save+="reservacion"		
@@ -122,7 +127,7 @@ class Lexer(object):
 					# self.condition="finish"
 					break	
 			elif self.condition=="error":
-				raise Exception('Dear Klenin there is a mistake in char: ' + str(self.firstchar)+ ' ,line: ' + str(self.firstline) )
+				raise lexico('Dear Klenin there is a mistake in char: ' + str(self.firstchar)+ ' ,line: ' + str(self.firstline) )
 
 			elif self.condition =="especial":
 				self.save+=self.lecturaprimersimbolo
@@ -151,7 +156,7 @@ class Lexer(object):
 					self.save="."
 					self.conditn="Numbers"
 					self.condition="delim"
-					return lexema(presave,self.firstchar, self.firstline, self.conditn)
+					return lexema(presave,self.firstchar, self.firstline, self.conditn,self.klen)
 				elif self.lecturaprimersimbolo.isdigit(): 	
 					self.save+=self.lecturaprimersimbolo
 					self.condition="float"																											
@@ -235,48 +240,62 @@ class Lexer(object):
 			if self.lecturaprimersimbolo in Final_line:
 				self.line+=1
 				self.char=0	
-		
+		klen=self.klen
 		conditn = self.condition
 		if self.save in REL_BIN_OPS:
 			conditn="binary operations"
+			klen="Integer"
 		elif conditn== "kotoba":
-			if self.save.upper() in reservadas:
+			if self.save.lower() in reservadas:
 				conditn="Reservation words"
+				klen="Key Word"
 			else:
 				conditn="words"	
+				klen="String"
 		elif self.save in ARITHM_BIN_OPS:
 			conditn="arithmetical operations"	
+			klen="operator"
 		elif self.save in BOOL_BIN_OPS:
 			conditn="Boolean operations"
+			klen="Bool"
 		elif self.save in BOOL_UNARY_OPS:
-			conditn="Boolean  unary operations"				 
+			conditn="Boolean  unary operations"
+			klen="Bool"				 
 		elif conditn =="especial":
 			conditn="float"
+			klen="float"
 		elif conditn =="bango":
 			conditn="Numbers"
+			klen="Integer"
+		elif conditn =="delim":
+			klen="Delimeter"
+		elif conditn =="float":
+			klen="float"
+		elif conditn =="ten":
+			conditn="float"
 
 		self.condition='S'
 			#return self.saveb
 		self.conditn = conditn
-
-		return lexema(self.save,self.firstchar,self.firstline,conditn)
+		self.klen= klen
+		return lexema(self.save,self.firstchar,self.firstline,conditn,klen)
 		self.test.close()
 
 	def siguientelexicoget(self):
-		return lexema(self.save,self.firstchar,self.firstline,self.conditn)
+		return lexema(self.save,self.firstchar,self.firstline,self.conditn,self.klen)
 
 
-if __name__ == '__main__':
-	lexanalizer = Lexer()
-	file2 = open("result\\test_parser.txt",'w') 
-	try:
-		lex = lexanalizer.siguientelexico()
-		while lex.save:
-			file2.write("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save+'\n'+lex.type)
-			print("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save +" type: "+lex.type)
-			lex = lexanalizer.siguientelexico()
-	except Exception as e:
-		print(e)
+# if __name__ == '__main__':
+# 	lexanalizer = Lexer()
+# 	file2 = open("result\\test_parser.txt",'w') 
+# 	try:
+# 		lex = lexanalizer.siguientelexico()
+# 		while lex.save:
+# 			file2.write("line:"+ str(lex.line) + " char" + str(lex.char) +" lex:" + lex.save+lex.type+" klenin: "+lex.klen)
+# 			print("line:"+ str(lex.line) + " char:" + str(lex.char) +" lex: " + lex.save +"  "+ lex.type+" type: "+lex.klen)
+# 			lex = lexanalizer.siguientelexico()
+# 	except Exception as e:
+# 		print(e)
 
 
 		

@@ -1,0 +1,4 @@
+line:1 char:1 lex: 1  Numbers type: Integer
+line:1 char:3 lex: 2  Numbers type: Integer
+line:1 char:5 lex: 1254  Numbers type: Integer
+line:1 char:10 lex: 48791  Numbers type: Integer

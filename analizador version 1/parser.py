@@ -1,13 +1,14 @@
-import work 
+import lexer
 import sys
 import os
+from error import sintetica, compiler_exception
 
 class Numbernode(object):
 	"""docstring for Numbernode"""
 	def __init__(self,lex):
 		self.Numberlex=lex
 	def print_result(self,a):
-		 print(" "*a + self.Numberlex.save)
+		return (" "*a + self.Numberlex.save)
 
 
 class Identnode(object):
@@ -15,7 +16,7 @@ class Identnode(object):
 	def __init__(self, identificador):
 		self.ind=identificador
 	def print_result(self,a):
-		 print(" "*a + self.ind.save)
+		return(" "*a + self.ind.save)
 	
 class Binnode(object):
 	def __init__(self, left,right,operation_lex):
@@ -23,18 +24,16 @@ class Binnode(object):
 		self.migi=right
 		self.lexluthor=operation_lex
 	def print_result(self,a):
-		 print(" "*a + self.lexluthor.save)
-		 self.hidari.print_result(a+1)
-		 self.migi.print_result(a+1)
+		output = (" "*a + self.lexluthor.save)
+		return output + "\n" + self.hidari.print_result(a+1) + "\n" + self.migi.print_result(a+1)
 
 
 
 class parser(object):
 
-	def __init__(self):
-		directorio = 'C:/Users/user/Documents/Documentos universidad 4 semestre/Compilador_PL0-master/analizador version 1/test/test_parser.txt'
-		self.test =open(directorio,"r")
-		self.work=work.Lexer()
+	def __init__(self, fin):
+		self.test =open(fin,"r")
+		self.work=work.Lexer(fin)
 
 
 	def par_expresion(self):
@@ -64,7 +63,7 @@ class parser(object):
 			if izquierda1.save == ")":
 				return izquierda
 			else:
-				raise Exception('Dear Klenin there is a mistake in char: ' + str(izquierda1.char)+ ' ,line: ' +str(izquierda1.line))	
+				raise sintetica('Dear Klenin there is a mistake in char: ' + str(izquierda1.char)+ ' ,line: ' +str(izquierda1.line))	
 	
 		if left.type =="Numbers":
 			return Numbernode(left)   	
@@ -72,13 +71,13 @@ class parser(object):
 		if left.type =="words":
 			return Identnode(left) 
 		else: 
-			raise Exception('Dear Klenin there is a mistake in char: ' + str(left.char)+ ' ,line: ' +str(left.line))
+			raise sintetica('Dear Klenin there is a mistake in char: ' + str(left.char)+ ' ,line: ' +str(left.line))
 			
-if __name__ == '__main__':
-	par_alizer = parser()
-	file2 = open("result\\test_parser.txt",'w') 
-	try:
-	parse_res = par_alizer.par_expresion()
-	parse_res.print_result(0)
-	except Exception as e:
-		print(e)
+# if __name__ == '__main__':
+# 	par_alizer = parser()
+# 	file2 = open("result\\test_parser.txt",'w') 
+# 	try:
+# 		parse_res = par_alizer.par_expresion()
+# 		parse_res.print_result(0)
+# 	except compiler_exception as e:
+# 		print(e)

@@ -5,7 +5,7 @@ if __name__ == "__main__":
 	count=0
 	count_incorrect=0
 
-	for i in range(1,4):
+	for i in range(1,16):
 
 		fout = open("out"+ str(i) +".txt", "w")
 		try:
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 				lex = ref.siguientelexico()
 
 		except compiler_exception as e:
-			if fout.seek():
+			if fout.tell():
 				fout.write("\n" + str(e))
 			else:
 				fout.write(str(e))
